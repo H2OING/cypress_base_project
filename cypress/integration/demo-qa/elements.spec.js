@@ -4,7 +4,7 @@ import RadioButtonPage from "../../pageObjects/radioButtonPage";
 import WebTablePage from "../../pageObjects/webTablePage";
 import ButtonsPage from "../../pageObjects/buttonsPage";
 import LinksPage from "../../pageObjects/linksPage";
-
+import SelectablesPage from "../../pageObjects/selectablesPage";
 context("Elements Page", () => {
   context("Text box scenarios", () => {
     beforeEach(() => {
@@ -154,8 +154,8 @@ context("Elements Page", () => {
       LinksPage.visit();
     });
     
-    it.only("click link buttons", ()=>{
-      cy.intercept("GET", "created"{ statusCode: }).as("getCreated");
+    it("click link buttons", ()=>{
+      cy.intercept("GET", "created").as("getCreated");
       LinksPage.createdLink.click();
       cy.wait("@getCreated").then((data) =>{
         expect(data.response.statusCode).to.eq(201)
@@ -163,5 +163,44 @@ context("Elements Page", () => {
 
     });
 
+  });
+
+  context("selectable Scenarios", () =>{
+
+    beforeEach(() => {
+      SelectablesPage.visit();
+    });
+
+    it("1. Scenārijs (list)", ()=> {
+      
+      SelectablesPage.listItems.contains("Cras justo odio").click();
+      SelectablesPage.listItems.contains("Morbi leo risus").click();
+      SelectablesPage.listItems.contains("Cras justo odio").should('have.class', 'active');
+      SelectablesPage.listItems.contains("Morbi leo risus").should('have.class', 'active');
+
+      SelectablesPage.listItems.contains("Dapibus ac facilisis in").should('not.have.class', 'active');
+      SelectablesPage.listItems.contains("Porta ac consectetur ac").should('not.have.class', 'active');
+    });
+
+    it.only("2. Scenārijs (grid)", () => {
+      SelectablesPage.gridNavButton.click();
+
+      SelectablesPage.gridItems.contains("Two").click();
+      SelectablesPage.gridItems.contains("Four").click();
+      SelectablesPage.gridItems.contains("Six").click();
+      SelectablesPage.gridItems.contains("Eight").click();
+
+      SelectablesPage.gridItems.contains("Two").should('have.class', 'active');
+      SelectablesPage.gridItems.contains("Four").should('have.class', 'active');
+      SelectablesPage.gridItems.contains("Six").should('have.class', 'active');
+      SelectablesPage.gridItems.contains("Eight").should('have.class', 'active');
+
+      
+      SelectablesPage.gridItems.contains("One").should('not.have.class', 'active');
+      SelectablesPage.gridItems.contains("Three").should('not.have.class', 'active');
+      SelectablesPage.gridItems.contains("Five").should('not.have.class', 'active');
+      SelectablesPage.gridItems.contains("Seven").should('not.have.class', 'active');
+      SelectablesPage.gridItems.contains("Nine").should('not.have.class', 'active');
+    });
   });
 });
